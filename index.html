@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎄 圣诞快乐</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    height:100vh;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at top,#044,#000 60%);
+    font-family:"PingFang SC",sans-serif;
+    color:#fff;
+}
+
+/* ================= 圣诞树主体 ================= */
+.tree{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    cursor:pointer;
+}
+
+/* 树层（渐变+阴影） */
+.layer{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    border-left:170px solid transparent;
+    border-right:170px solid transparent;
+    border-bottom:200px solid;
+    filter:drop-shadow(0 0 20px rgba(0,255,200,.6));
+    animation:treeGlow 3s infinite alternate;
+}
+
+.layer:nth-child(1){
+    top:0;
+    border-bottom-color:#1fd38a;
+}
+.layer:nth-child(2){
+    top:120px;
+    border-left-width:150px;
+    border-right-width:150px;
+    border-bottom-width:180px;
+    border-bottom-color:#17b97b;
+}
+.layer:nth-child(3){
+    top:230px;
+    border-left-width:130px;
+    border-right-width:130px;
+    border-bottom-width:160px;
+    border-bottom-color:#119f69;
+}
+.layer:nth-child(4){
+    top:330px;
+    border-left-width:110px;
+    border-right-width:110px;
+    border-bottom-width:140px;
+    border-bottom-color:#0c8759;
+}
+
+/* 树干 */
+.trunk{
+    position:absolute;
+    top:460px;
+    left:50%;
+    transform:translateX(-50%);
+    width:60px;
+    height:80px;
+    background:#6b3e26;
+    border-radius:8px;
+}
+
+/* ================= 星星 ================= */
+.star{
+    position:absolute;
+    top:-90px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:64px;
+    color:gold;
+    text-shadow:0 0 25px gold,0 0 40px gold;
+    animation:starSpin 6s linear infinite,
+             starPulse 1.8s infinite;
+}
+
+/* ================= 彩灯 ================= */
+.light{
+    position:absolute;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    animation:blink 1.2s infinite alternate;
+}
+
+/* ================= 祝福弹窗 ================= */
+.message{
+    position:fixed;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%) scale(0);
+    background:rgba(0,0,0,.88);
+    padding:28px;
+    border-radius:18px;
+    width:82%;
+    text-align:center;
+    line-height:1.8;
+    transition:.45s;
+    z-index:10;
+    box-shadow:0 0 30px rgba(255,255,255,.15);
+}
+.message.show{
+    transform:translate(-50%,-50%) scale(1);
+}
+
+/* ================= 飘雪 ================= */
+.snow{
+    position:fixed;
+    top:-10px;
+    font-size:14px;
+    opacity:.9;
+    animation:fall linear infinite;
+}
+
+@keyframes fall{
+    to{transform:translateY(110vh)}
+}
+
+@keyframes blink{
+    from{opacity:.3}
+    to{opacity:1}
+}
+
+@keyframes treeGlow{
+    from{filter:brightness(1)}
+    to{filter:brightness(1.35)}
+}
+
+@keyframes starPulse{
+    50%{transform:translateX(-50%) scale(1.25)}
+}
+
+@keyframes starSpin{
+    to{transform:translateX(-50%) rotate(360deg)}
+}
+
+/* 提示 */
+.tip{
+    position:fixed;
+    bottom:28px;
+    width:100%;
+    text-align:center;
+    opacity:.85;
+}
+</style>
+</head>
+
+<body>
+
+<div class="tree" onclick="startAll()">
+    <div class="star">⭐</div>
+    <div class="layer"></div>
+    <div class="layer"></div>
+    <div class="layer"></div>
+    <div class="layer"></div>
+    <div class="trunk"></div>
+
+    <!-- 环绕彩灯 -->
+    <div class="light" style="top:90px;left:-80px;background:red"></div>
+    <div class="light" style="top:120px;left:60px;background:yellow"></div>
+    <div class="light" style="top:170px;left:-40px;background:#0ff"></div>
+    <div class="light" style="top:210px;left:80px;background:pink"></div>
+    <div class="light" style="top:260px;left:-70px;background:orange"></div>
+    <div class="light" style="top:300px;left:50px;background:#9f0"></div>
+</div>
+
+<div class="message" id="msg">
+🎄 亲爱的 <strong>薛舒文</strong> ❤️<br><br>
+当星星亮起，雪花落下，<br>
+愿这一刻的浪漫与温柔，<br>
+被你完整珍藏。<br><br>
+✨ 圣诞快乐 ✨
+</div>
+
+<div class="tip">🎁 点击圣诞树 · 开启惊喜</div>
+
+<audio id="music" loop>
+  <source src="music.mp3">
+</audio>
+
+<script>
+let started=false;
+
+function startAll(){
+    document.getElementById("msg").classList.toggle("show");
+    if(!started){
+        document.getElementById("music").play();
+        started=true;
+    }
+}
+
+/* 多层飘雪 */
+function snow(){
+    const s=document.createElement("div");
+    s.className="snow";
+    s.innerHTML=Math.random()>.5?"❄":"✦";
+    s.style.left=Math.random()*window.innerWidth+"px";
+    s.style.fontSize=(Math.random()*10+10)+"px";
+    s.style.animationDuration=(Math.random()*4+3)+"s";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),7000);
+}
+setInterval(snow,120);
+</script>
+
+</body>
+</html>
